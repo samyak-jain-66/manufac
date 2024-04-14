@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import winedata from "../src/Wine-Data.json";
+import ShowTable from "./components/ShowTable";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [data, setData] = useState(new Map());
+  useEffect(() => {
+    let modifyData = new Map();
+    winedata?.forEach((item) => {
+      if (modifyData.has(item.Alcohol)) {
+        let modifyArray = modifyData.get(item?.Alcohol);
+        modifyArray.push(item);
+        modifyData.set(item?.Alcohol, [...modifyArray]);
+      } else {
+        modifyData.set(item.Alcohol, [{ ...item }]);
+      }
+    });
+
+    setData(modifyData);
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ShowTable data={data} />
     </div>
   );
 }
